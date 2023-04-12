@@ -5,22 +5,23 @@ import java.io.IOException;
 public class Menu {
     private final Scanner scanner;
     private final Agenda agenda;
+    private final LeitorDeAgenda leitor;
     public Menu(Scanner scanner, Agenda agenda, String nomeArquivo) {
         this.scanner = scanner;
         this.agenda = agenda;
-
+        this.leitor = new LeitorDeAgenda();
         System.out.println("Carregando agenda inicial");
+
         try {
             /*
              * Essa é a maneira de lidar com possíveis erros por falta do arquivo.
              */
-            carregaAgenda(nomeArquivo);
+            leitor.carregaContatos(nomeArquivo, agenda);
         } catch (FileNotFoundException e) {
             System.err.println("Arquivo não encontrado: " + e.getMessage());
         } catch (IOException e) {
             System.err.println("Erro lendo arquivo: " + e.getMessage());
         }
-        scanner.nextLine();
     }
     public Menu(Scanner scanner, Agenda agenda) {
         this(scanner, agenda, "agenda_inicial.csv");
@@ -36,6 +37,9 @@ public class Menu {
                             "(C)adastrar Contato\n" +
                             "(L)istar Contatos\n" +
                             "(E)xibir Contato\n" +
+                            "(F)avoritos\n" +
+                            "(A)dicionar Favorito\n" +
+                            "(R)emover Favorito\n" +
                             "(S)air\n" +
                             "\n" +
                             "Opção> ");
@@ -65,12 +69,7 @@ public class Menu {
      */
     private void listaContatos() {
         System.out.println("\nLista de contatos: ");
-        Contato[] contatos = agenda.getContatos();
-        for (int i = 0; i < contatos.length; i++) {
-            if (contatos[i] != null) {
-                System.out.println(formataContato(i, contatos[i]));
-            }
-        }
+        System.out.println(agenda);
     }
 
     /**
@@ -78,17 +77,35 @@ public class Menu {
      */
     private void cadastraContato() {
         System.out.print("\nPosição na agenda> ");
-        int posicao = Integer.parseInt(scanner.nextLine()) -1;
-        if (posicao >= 0 && posicao <= 99) {
-            System.out.print("Nome> ");
-            String nome = scanner.nextLine();
-            System.out.print("Sobrenome> ");
-            String sobrenome = scanner.nextLine();
-            System.out.print("Telefone> ");
-            String telefone = scanner.nextLine();
-            agenda.cadastraContato(posicao, nome, sobrenome, telefone);
-        } else {
+        String strPosicao = scanner.nextLine();
+
+        try {
+            int posicao = Integer.parseInt(strPosicao) -1;
+            if (posicao >= 0 && posicao <= 99) {
+                System.out.print("Nome> ");
+                String nome = scanner.nextLine();
+                if (nome.equals("")) {
+                    System.out.println("CONTATO INVÁLIDO");
+                    return;
+                }
+                System.out.print("Sobrenome> ");
+                String sobrenome = scanner.nextLine();
+                System.out.print("Telefone> ");
+                String telefone = scanner.nextLine();
+                if (telefone.equals("")) {
+                    System.out.println("CONTATO INVÁLIDO");
+                    return;
+                }
+                if (!agenda.cadastraContato(posicao, nome, sobrenome, telefone)) {
+                    System.out.println("CONTATO JA CADASRADO");
+                }
+            } else {
+                System.out.println("POSIÇÃO INVÁLIDA");
+            }
+
+        } catch (NumberFormatException e ) {
             System.out.println("POSIÇÃO INVÁLIDA");
+            return;
         }
     }
 
@@ -110,25 +127,17 @@ public class Menu {
      */
     private void exibeContato() {
         System.out.print("\nQual contato> ");
-        int posicao = Integer.parseInt(scanner.nextLine());
-        if (agenda.temContato(posicao)) {
-            Contato contato = agenda.getContato(posicao);
-            System.out.println("Dados do contato:\n" + contato.getNome() + " " + contato.getSobrenome() + "\n" + contato.getTelefone());
-        } else {
+        try {
+            int posicao = Integer.parseInt(scanner.nextLine()) - 1;
+            if (agenda.temContato(posicao)) {
+                Contato contato = agenda.getContato(posicao);
+                System.out.println("Dados do contato:\n" + contato.getContatoCompleto());
+            } else {
+                System.out.println("POSIÇÃO INVÁLIDA!");
+            }
+        } catch (NumberFormatException e ) {
             System.out.println("POSIÇÃO INVÁLIDA!");
-            abreMenu();
         }
-    }
-
-    /**
-     * Formata um contato para impressão na interface.
-     *
-     * @param posicao A posição do contato (que é exibida)/
-     * @param contato O contato a ser impresso.
-     * @return A String formatada.
-     */
-    private String formataContato(int posicao, Contato contato) {
-        return posicao + " - " + contato;
     }
 
     /**

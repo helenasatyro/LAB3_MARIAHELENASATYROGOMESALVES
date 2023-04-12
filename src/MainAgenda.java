@@ -1,5 +1,4 @@
 import java.util.Scanner;
-
 /**
  * Interface com menus texto para manipular uma agenda de contatos.
  * 
