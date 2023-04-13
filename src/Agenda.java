@@ -18,8 +18,8 @@ public class Agenda {
      * @param posicao Posição do contato na agenda.
      * @return Dados do contato. Null se não há contato na posição.
      */
-    public Contato getContato(int posicao) {
-        return contatos[posicao];
+    public String getContato(int posicao) {
+        return contatos[posicao].getContatoCompleto();
     }
 
     /**
@@ -55,28 +55,37 @@ public class Agenda {
         if (ehFavorito(posContato)) {
             return false;
         } else {
+            if (favoritos[posFav] != null) {
+                removeFavorito(posFav);
+            }
             contatos[posContato].setFavorito(true);
             favoritos[posFav] = contatos[posContato];
             return true;
         }
     }
 
-    public boolean removeFavorito(int posContato) {
-        if (!ehFavorito(posContato)) {
+    public boolean removeFavorito(int posFav) {
+        if (favoritos[posFav] == null) {
             return false;
         } else {
-            contatos[posContato].setFavorito(false);
-            for (int i = 0; i < TAMANHO_FAVS; i++) {
-                if (favoritos[i].equals(contatos[posContato])) {
-                    favoritos[i] = null;
-                }
+            favoritos[posFav].setFavorito(false);
+            favoritos[posFav] = null;
             }
             return true;
-        }
     }
 
     public boolean ehFavorito(int pos) {
         return contatos[pos].getEhFavorito();
+    }
+
+    public String getFavoritos() {
+        String retorno = "";
+        for (int i=0; i < TAMANHO_FAVS; i++) {
+            if (favoritos[i] != null) {
+                retorno += (i +1) + " - " + favoritos[i] + "\n";
+            }
+        }
+        return retorno;
     }
 
     @Override
