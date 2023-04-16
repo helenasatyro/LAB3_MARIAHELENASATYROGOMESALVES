@@ -1,4 +1,4 @@
-
+package agenda;
 public class Contato {
     private final String nome;
     private final String sobrenome;

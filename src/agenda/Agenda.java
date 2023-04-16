@@ -1,3 +1,4 @@
+package agenda;
 public class Agenda {
     private static final int TAMANHO_AGENDA = 100;
     private static final int TAMANHO_FAVS = 10;
@@ -70,8 +71,8 @@ public class Agenda {
         } else {
             favoritos[posFav].setFavorito(false);
             favoritos[posFav] = null;
-            }
-            return true;
+        }
+        return true;
     }
 
     public boolean ehFavorito(int pos) {

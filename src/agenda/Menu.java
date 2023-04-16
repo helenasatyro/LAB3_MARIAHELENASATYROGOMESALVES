@@ -1,3 +1,4 @@
+package agenda;
 import java.util.Scanner;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -5,11 +6,11 @@ import java.io.IOException;
 public class Menu {
     private final Scanner scanner;
     private final Agenda agenda;
-    private final LeitorDeAgenda leitor;
+
     public Menu(Scanner scanner, Agenda agenda, String nomeArquivo) {
         this.scanner = scanner;
         this.agenda = agenda;
-        this.leitor = new LeitorDeAgenda();
+        LeitorDeAgenda leitor = new LeitorDeAgenda();
         System.out.println("Carregando agenda inicial");
 
         try {
@@ -61,9 +62,7 @@ public class Menu {
             case "F" -> verFavoritos();
             case "A" -> addFavorito();
             case "R" -> removerFavorito();
-            default -> {
-                System.out.println("OPÇÃO INVÁLIDA!");
-            }
+            default -> System.out.println("OPÇÃO INVÁLIDA!");
         }
     }
 
@@ -83,7 +82,7 @@ public class Menu {
                 return;
             }
         } else {
-        System.out.println("POSIÇÃO INVÁLIDA");
+            System.out.println("POSIÇÃO INVÁLIDA");
         }
     }
 
@@ -198,4 +197,3 @@ public class Menu {
         System.exit(0);
     }
 }
-
