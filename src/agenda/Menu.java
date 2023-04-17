@@ -75,7 +75,6 @@ public class Menu {
             System.out.println("POSIÇÃO INVÁLIDA");
             return;
         }
-        pos--;
         System.out.println(agenda.removeFavorito(pos));
     }
 
@@ -96,7 +95,6 @@ public class Menu {
             System.out.println("POSIÇÃO INVÁLIDA");
             return;
         }
-        --cont; --pos;
         System.out.println(agenda.cadastraFavorito(cont, pos));
     }
 
@@ -131,7 +129,7 @@ public class Menu {
         String sobrenome = scanner.nextLine();
         System.out.print("Telefone> ");
         String telefone = scanner.nextLine();
-        System.out.println(agenda.cadastraContato(--posicao, nome, sobrenome, telefone));
+        System.out.println(agenda.cadastraContato(posicao, nome, sobrenome, telefone));
 
     }
 
@@ -143,7 +141,7 @@ public class Menu {
         try {
             int posicao = Integer.parseInt(scanner.nextLine());
             if (agenda.temContato(posicao)) {
-                System.out.println("Dados do contato:\n" + agenda.getContatoString(--posicao));
+                System.out.println("Dados do contato:\n" + agenda.getContatoString(posicao));
             } else {
                 System.out.println("POSIÇÃO INVÁLIDA!");
             }

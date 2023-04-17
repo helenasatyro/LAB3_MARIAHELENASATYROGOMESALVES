@@ -36,7 +36,7 @@ public class Contato {
     }
 
     public void setFavorito(boolean valor) {
-        ehFavorito = valor;
+        this.ehFavorito = valor;
     }
 
     public boolean getEhFavorito() {
