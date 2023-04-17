@@ -11,6 +11,7 @@ class AgendaTest {
 
 	@BeforeEach
 	void setUp() {
+		agendaBase = new Agenda();
 		agendaBase.cadastraContato(1, "Matheus", "Gaudencio", "(83) 99999-0000");
 		agendaBase.cadastraContato(3, "helena", "satyro", "0928130");
 		agendaBase.cadastraContato(4, "maria", "helena", "477123");
@@ -80,18 +81,17 @@ class AgendaTest {
 	@Test
 	void testaDefinirFavoritoPosVazia() {
 		assertEquals("CONTATO FAVORITADO NA POSIÇÃO 1!", agendaBase.cadastraFavorito(3, 1), "Deve favoritar com sucesso na posição especificada");
-		assertEquals(true, agendaBase.ehFavorito(3), "Deve definir o contato 3 como favorito");
-		assertEquals(true, agendaBase.getContato(3-1).getEhFavorito(), "atributo ehFavorito deve ser verdadeiro");
+		assert agendaBase.getContato(3-1).getEhFavorito(); // getContato usa posicao real
+		assert agendaBase.ehFavorito(3); // ehfavrito usa posicao +1
 	}
 
 	@Test
 	void testaDefinirFavoritoPosOcupada() {
 		agendaBase.cadastraFavorito(3, 1);
 		agendaBase.cadastraFavorito(4, 1);
-		assertEquals(false, agendaBase.ehFavorito(3-1), "Contato 3 deve ser falso");
-		assertEquals(false, agendaBase.getContato(3-1).getEhFavorito(),"Contato 3 deve ser falso") ;
-		assert agendaBase.ehFavorito(4);
-		assert agendaBase.getContato(4-1).getEhFavorito();
+		assert !agendaBase.getContato(3-1).getEhFavorito(); // getContato usa posicao real
+		assert !agendaBase.ehFavorito(3); // ehfavrito usa posicao +1
+		assert agendaBase.getContato(4-1).getEhFavorito(); // getContato usa posicao real
+		assert agendaBase.ehFavorito(4); // ehfavrito usa posicao +1
 	}
-
 }

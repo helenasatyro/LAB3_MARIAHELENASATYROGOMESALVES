@@ -78,7 +78,7 @@ public class Agenda {
             return "CONTATO JÁ É FAVORITO";
         }
         if (favoritos[posFav] != null) {
-            removeFavorito(posFav);
+            removeFavorito(posFav+1);
         }
         getContato(posContato).setFavorito(true);
         favoritos[posFav] = contatos[posContato];
@@ -99,7 +99,7 @@ public class Agenda {
     }
 
     public boolean ehFavorito(int pos) {
-        return getContato(pos).getEhFavorito();
+        return getContato(--pos).getEhFavorito();
     }
 
     public String getFavoritos() {
