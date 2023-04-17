@@ -1,31 +1,18 @@
 package agenda;
+
+import java.util.Objects;
+
 public class Contato {
     private final String nome;
     private final String sobrenome;
     private final String telefone;
     private boolean ehFavorito;
 
-    Contato(String nome, String sobrenome, String telefone) {
+    public Contato(String nome, String sobrenome, String telefone) {
         this.nome = nome;
         this.sobrenome = sobrenome;
         this.telefone = telefone;
         this.ehFavorito = false;
-    }
-
-    String getNome() {
-        return nome;
-    }
-
-    String getSobrenome() {
-        return sobrenome;
-    }
-
-    String getTelefone() {
-        return telefone;
-    }
-
-    Contato getContato() {
-        return this;
     }
     @Override
     public String toString() {
@@ -36,15 +23,19 @@ public class Contato {
      *
      * @return A String formatada.
      */
-    String getContatoCompleto() {
-        return nome + " " + sobrenome + "\n" + telefone;
+    public String getContatoCompleto() {
+        if (this.ehFavorito) {
+            return "❤️ " + nome + " " + sobrenome + "\n" + telefone;
+        } else {
+            return nome + " " + sobrenome + "\n" + telefone;
+        }
     }
 
-    void setFavorito(boolean valor) {
+    public void setFavorito(boolean valor) {
         ehFavorito = valor;
     }
 
-    boolean getEhFavorito() {
+    public boolean getEhFavorito() {
         return this.ehFavorito;
     }
 
@@ -56,7 +47,14 @@ public class Contato {
         if (!(obj.getClass() == Contato.class)) {
             return false;
         }
+
         Contato contObj = (Contato) obj;
-        return nome.equalsIgnoreCase(contObj.nome) && this.sobrenome.equalsIgnoreCase(contObj.sobrenome);
+        return nome.equalsIgnoreCase(contObj.nome) && this.sobrenome.equalsIgnoreCase(contObj.sobrenome)
+                && this.hashCode() == contObj.hashCode();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(nome, sobrenome);
     }
 }

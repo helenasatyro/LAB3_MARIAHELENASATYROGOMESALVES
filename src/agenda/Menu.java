@@ -1,4 +1,5 @@
 package agenda;
+import java.sql.SQLOutput;
 import java.util.Scanner;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -70,12 +71,12 @@ public class Menu {
         System.out.print("Posicao> ");
         int pos;
         try {
-            pos = Integer.parseInt(scanner.nextLine()) -1;
+            pos = Integer.parseInt(scanner.nextLine());
         } catch (NumberFormatException e) {
             System.out.println("POSIÇÃO INVÁLIDA");
             return;
         }
-        if (pos <= 9 && pos >= 0) {
+        if (pos <= 10 && pos >= 1) {
             if (!agenda.removeFavorito(pos)) {
                 System.out.println("CONTATO NÃO É FAVORITO");
             } else {
@@ -91,7 +92,7 @@ public class Menu {
         int cont;
         int pos;
         try {
-            cont = Integer.parseInt(scanner.nextLine()) -1;
+            cont = Integer.parseInt(scanner.nextLine());
         } catch (NumberFormatException e) {
             System.out.println("POSIÇÃO INVÁLIDA");
             return;
@@ -100,14 +101,14 @@ public class Menu {
             if (!agenda.ehFavorito(cont)) {
                 System.out.print("Posicao> ");
                 try {
-                    pos = Integer.parseInt(scanner.nextLine()) - 1;
+                    pos = Integer.parseInt(scanner.nextLine());
                 } catch (NumberFormatException e) {
                     System.out.println("POSIÇÃO INVÁLIDA");
                     return;
                 }
-                if (pos <= 9 && pos >= 0) {
+                if (pos <= 10 && pos >= 1) {
                     agenda.cadastraFavorito(cont, pos);
-                    System.out.println("CONTATO FAVORITADO NA POSIÇÃO " + (pos + 1) + "!");
+                    System.out.println("CONTATO FAVORITADO NA POSIÇÃO " + (pos) + "!");
                 } else {
                     System.out.println("POSIÇÃO INVÁLIDA");
                 }
@@ -137,35 +138,21 @@ public class Menu {
     private void cadastraContato() {
         System.out.print("\nPosição na agenda> ");
         String strPosicao = scanner.nextLine();
-
+        int posicao;
         try {
-            int posicao = Integer.parseInt(strPosicao) -1;
-            if (posicao >= 0 && posicao <= 99) {
-                System.out.print("Nome> ");
-                String nome = scanner.nextLine();
-                if (nome.equals("")) {
-                    System.out.println("CONTATO INVÁLIDO");
-                    return;
-                }
-                System.out.print("Sobrenome> ");
-                String sobrenome = scanner.nextLine();
-                System.out.print("Telefone> ");
-                String telefone = scanner.nextLine();
-                if (telefone.equals("")) {
-                    System.out.println("CONTATO INVÁLIDO");
-                    return;
-                }
-                if (!agenda.cadastraContato(posicao, nome, sobrenome, telefone)) {
-                    System.out.println("CONTATO JA CADASTRADO");
-                }
-            } else {
-                System.out.println("POSIÇÃO INVÁLIDA");
-            }
-
+            posicao = Integer.parseInt(strPosicao);
         } catch (NumberFormatException e ) {
             System.out.println("POSIÇÃO INVÁLIDA");
             return;
         }
+        System.out.print("Nome> ");
+        String nome = scanner.nextLine();
+        System.out.print("Sobrenome> ");
+        String sobrenome = scanner.nextLine();
+        System.out.print("Telefone> ");
+        String telefone = scanner.nextLine();
+        System.out.println(agenda.cadastraContato(posicao, nome, sobrenome, telefone));
+
     }
 
     /**
@@ -174,13 +161,9 @@ public class Menu {
     private void exibeContato() {
         System.out.print("\nQual contato> ");
         try {
-            int posicao = Integer.parseInt(scanner.nextLine()) - 1;
+            int posicao = Integer.parseInt(scanner.nextLine());
             if (agenda.temContato(posicao)) {
-                if (agenda.ehFavorito(posicao)){
-                    System.out.println("Dados do contato:\n" + "❤️ " + agenda.getContato(posicao));
-                } else {
-                    System.out.println("Dados do contato:\n" + agenda.getContato(posicao));
-                }
+                System.out.println("Dados do contato:\n" + agenda.getContato(posicao));
             } else {
                 System.out.println("POSIÇÃO INVÁLIDA!");
             }
