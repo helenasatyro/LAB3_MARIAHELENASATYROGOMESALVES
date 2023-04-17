@@ -3,6 +3,8 @@ import agenda.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 
 class AgendaTest {
 	private Agenda agendaBase = new Agenda();
@@ -10,6 +12,9 @@ class AgendaTest {
 	@BeforeEach
 	void setUp() {
 		agendaBase.cadastraContato(1, "Matheus", "Gaudencio", "(83) 99999-0000");
+		agendaBase.cadastraContato(3, "helena", "satyro", "0928130");
+		agendaBase.cadastraContato(4, "maria", "helena", "477123");
+
 	}
 
 	@Test
@@ -63,7 +68,30 @@ class AgendaTest {
 
 	@Test
 	void testaRepresentacaoContato() {
-		assert agendaBase.getContato(1).equals("Matheus Gaudencio\n(83) 99999-0000");
+		assert agendaBase.getContatoString(1).equals("Matheus Gaudencio\n(83) 99999-0000");
+	}
+
+	@Test
+	void testaTemContato() {
+		Agenda agenda = new Agenda();
+		assert agenda.cadastraContato(1, "Matheus", "Gaudencio", "(83) 99999-0000").equals("CADASTRO REALIZADO");
+	}
+
+	@Test
+	void testaDefinirFavoritoPosVazia() {
+		assertEquals("CONTATO FAVORITADO NA POSIÇÃO 1!", agendaBase.cadastraFavorito(3, 1), "Deve favoritar com sucesso na posição especificada");
+		assertEquals(true, agendaBase.ehFavorito(3), "Deve definir o contato 3 como favorito");
+		assertEquals(true, agendaBase.getContato(3).getEhFavorito(), "atributo ehFavorito deve ser verdadeiro");
+	}
+
+	@Test
+	void testaDefinirFavoritoPosOcupada() {
+		agendaBase.cadastraFavorito(3, 1);
+		agendaBase.cadastraFavorito(4, 1);
+		assert !agendaBase.ehFavorito(3);
+		assert !agendaBase.getContato(3).getEhFavorito();
+		assert agendaBase.ehFavorito(4);
+		assert agendaBase.getContato(4).getEhFavorito();
 	}
 
 }

@@ -9,6 +9,10 @@ public class Contato {
     private boolean ehFavorito;
 
     public Contato(String nome, String sobrenome, String telefone) {
+        if (nome == null || telefone == null) {
+            throw new NullPointerException("Nome e Telefone não podem ser nulos.");
+        }
+        if (sobrenome == null) { sobrenome = "";}
         this.nome = nome;
         this.sobrenome = sobrenome;
         this.telefone = telefone;
