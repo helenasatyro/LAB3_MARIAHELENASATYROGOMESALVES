@@ -95,6 +95,6 @@ class AgendaTest {
 	@Test
 	void testaContatoCompletoFavorito() {
 		agendaBase.cadastraFavorito(1, 1);
-		assert agendaBase.getContatoString(1).equals("❤️ Matheus Gaudencio\n555-5551");
+		assertEquals("❤️ Matheus Gaudencio\n(83) 99999-0000", agendaBase.getContatoString(1));
 	}
 }

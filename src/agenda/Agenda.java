@@ -21,7 +21,7 @@ public class Agenda {
      */
     public String getContatoString(int posicao) {
         posicao--;
-        if (ehFavorito(posicao-1)) {
+        if (ehFavorito(posicao)) {
             return "❤️ " + contatos[posicao].getContatoCompleto();
         } else {
             return contatos[posicao].getContatoCompleto();
