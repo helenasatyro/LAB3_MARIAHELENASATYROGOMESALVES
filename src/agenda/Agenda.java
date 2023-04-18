@@ -21,7 +21,11 @@ public class Agenda {
      */
     public String getContatoString(int posicao) {
         posicao--;
-        return contatos[posicao].getContatoCompleto();
+        if (ehFavorito(posicao-1)) {
+            return "❤️ " + contatos[posicao].getContatoCompleto();
+        } else {
+            return contatos[posicao].getContatoCompleto();
+        }
     }
 
     public Contato getContato(int posicao) {
@@ -61,28 +65,23 @@ public class Agenda {
      * Verifica se há contato na posição
      * @return O array de contatos.
      */
-    public boolean temContato(int pos) {
-        if (pos >= 1 && pos <= 100) {
-            pos--;
-            return contatos[pos] != null;
-        }
-        return false;
+    public Contato[] getContatos() {
+        return contatos.clone();
     }
 
     public String cadastraFavorito(int posContato, int posFav) {
-        posFav--; posContato--;
-        if (!temContato(posContato+1) || !(posFav <= 9 && posFav >= 0) || !(posContato <= 99 && posContato >= 0) ) {
+
+        if (contatos[posContato-1] == null || !(posFav <= 10 && posFav >= 1) || !(posContato <= 100 && posContato >= 1) ) {
             return "POSIÇÃO INVÁLIDA";
         }
-        if (contatos[posContato].getEhFavorito()) {
+        if (ehFavorito(posContato -1)) {
             return "CONTATO JÁ É FAVORITO";
         }
-        if (favoritos[posFav] != null) {
-            removeFavorito(posFav+1);
+        if (favoritos[posFav-1] != null) {
+            removeFavorito(posFav-1);
         }
-        getContato(posContato).setFavorito(true);
-        favoritos[posFav] = contatos[posContato];
-        return "CONTATO FAVORITADO NA POSIÇÃO " + (++posFav) + "!";
+        favoritos[posFav-1] = contatos[posContato-1];
+        return "CONTATO FAVORITADO NA POSIÇÃO " + (posFav) + "!";
     }
 
     public String removeFavorito(int posFav) {
@@ -93,13 +92,19 @@ public class Agenda {
         if (favoritos[posFav] == null) {
             return "POSIÇÃO INVÁLIDA";
         }
-        favoritos[posFav].setFavorito(false);
         favoritos[posFav] = null;
         return "REMOVIDO!";
     }
 
     public boolean ehFavorito(int pos) {
-        return getContato(--pos).getEhFavorito();
+        for (int i=0; i<10; i++) {
+            if (favoritos[i] != null) {
+                if (favoritos[i].equals(contatos[pos])) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public String getFavoritos() {

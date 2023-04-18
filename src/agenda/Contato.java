@@ -6,8 +6,6 @@ public class Contato {
     private final String nome;
     private final String sobrenome;
     private final String telefone;
-    private boolean ehFavorito;
-
     public Contato(String nome, String sobrenome, String telefone) {
         if (nome == null || telefone == null) {
             throw new NullPointerException("Nome e Telefone não podem ser nulos.");
@@ -16,7 +14,6 @@ public class Contato {
         this.nome = nome;
         this.sobrenome = sobrenome;
         this.telefone = telefone;
-        this.ehFavorito = false;
     }
     @Override
     public String toString() {
@@ -28,19 +25,7 @@ public class Contato {
      * @return A String formatada.
      */
     public String getContatoCompleto() {
-        if (this.ehFavorito) {
-            return "❤️ " + nome + " " + sobrenome + "\n" + telefone;
-        } else {
-            return nome + " " + sobrenome + "\n" + telefone;
-        }
-    }
-
-    public void setFavorito(boolean valor) {
-        this.ehFavorito = valor;
-    }
-
-    public boolean getEhFavorito() {
-        return this.ehFavorito;
+        return nome + " " + sobrenome + "\n" + telefone;
     }
 
     @Override

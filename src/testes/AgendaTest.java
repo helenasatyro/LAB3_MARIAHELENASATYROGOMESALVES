@@ -81,7 +81,6 @@ class AgendaTest {
 	@Test
 	void testaDefinirFavoritoPosVazia() {
 		assertEquals("CONTATO FAVORITADO NA POSIÇÃO 1!", agendaBase.cadastraFavorito(3, 1), "Deve favoritar com sucesso na posição especificada");
-		assert agendaBase.getContato(3-1).getEhFavorito(); // getContato usa posicao real
 		assert agendaBase.ehFavorito(3); // ehfavrito usa posicao +1
 	}
 
@@ -89,9 +88,13 @@ class AgendaTest {
 	void testaDefinirFavoritoPosOcupada() {
 		agendaBase.cadastraFavorito(3, 1);
 		agendaBase.cadastraFavorito(4, 1);
-		assert !agendaBase.getContato(3-1).getEhFavorito(); // getContato usa posicao real
-		assert !agendaBase.ehFavorito(3); // ehfavrito usa posicao +1
-		assert agendaBase.getContato(4-1).getEhFavorito(); // getContato usa posicao real
-		assert agendaBase.ehFavorito(4); // ehfavrito usa posicao +1
+		assert !agendaBase.ehFavorito(3);
+		assert agendaBase.ehFavorito(4);
+	}
+
+	@Test
+	void testaContatoCompletoFavorito() {
+		agendaBase.cadastraFavorito(1, 1);
+		assert agendaBase.getContatoString(1).equals("❤️ Matheus Gaudencio\n555-5551");
 	}
 }

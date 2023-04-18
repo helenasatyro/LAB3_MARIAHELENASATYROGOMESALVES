@@ -140,7 +140,7 @@ public class Menu {
         System.out.print("\nQual contato> ");
         try {
             int posicao = Integer.parseInt(scanner.nextLine());
-            if (agenda.temContato(posicao)) {
+            if (agenda.getContatos()[posicao] != null) {
                 System.out.println("Dados do contato:\n" + agenda.getContatoString(posicao));
             } else {
                 System.out.println("POSIÇÃO INVÁLIDA!");

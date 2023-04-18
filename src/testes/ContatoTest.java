@@ -7,22 +7,16 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class ContatoTest {
     private Contato contatoBase;
-    private Contato contatoBaseFavorito;
+    private Contato contatoBaseDois;
     @BeforeEach
     void setUp() {
         this.contatoBase = new Contato("Matheus", "Gaudencio", "555-5551");
-        this.contatoBaseFavorito = new Contato("Matheus", "Gaudencio", "555-5551");
-        contatoBaseFavorito.setFavorito(true);
+        this.contatoBaseDois = new Contato("Matheus", "Gaudencio", "555-5551");
     }
 
     @Test
-    void testaContatoCompletogNormal() {
+    void testaContatoCompleto() {
         assert contatoBase.getContatoCompleto().equals("Matheus Gaudencio\n555-5551");
-    }
-
-    @Test
-    void testaContatoCompletoFavorito() {
-        assert contatoBaseFavorito.getContatoCompleto().equals("❤️ Matheus Gaudencio\n555-5551");
     }
 
     @Test
@@ -30,16 +24,12 @@ class ContatoTest {
         assert contatoBase.toString().equals("Matheus Gaudencio");
     }
     @Test
-    void testaToStringFavorito() {
-        assert contatoBaseFavorito.toString().equals("Matheus Gaudencio");
-    }
-    @Test
     void testaEqualsCompleto() {
         assert contatoBase.equals(contatoBase);
     }
     @Test
     void testaEqualsNomeSobrenome() {
-        assert contatoBase.equals(contatoBaseFavorito);
+        assert contatoBase.equals(contatoBaseDois);
     }
 
     @Test
@@ -94,19 +84,6 @@ class ContatoTest {
         } catch (Exception e) {
             assertEquals("Nome e Telefone não podem ser nulos.", e.getMessage());
         }
-    }
-
-
-    @Test
-    void testaEhFavorito() {
-        assert contatoBaseFavorito.getEhFavorito();
-        assert !contatoBase.getEhFavorito();
-    }
-
-    @Test
-    void testaSetFavorito() {
-        contatoBaseFavorito.setFavorito(false);
-        assert !contatoBaseFavorito.getEhFavorito();
     }
 
 }
