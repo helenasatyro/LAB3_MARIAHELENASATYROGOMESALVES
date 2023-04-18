@@ -1,4 +1,10 @@
 package agenda;
+
+/**
+ * Classe que mantém uma lista de contatos com posições. Pode ter 100 contatos.
+ *
+ * @author Maria Helena Sátyro Gomes Alves
+ */
 public class Agenda {
     private static final int TAMANHO_AGENDA = 100;
     private static final int TAMANHO_FAVS = 10;
@@ -15,32 +21,35 @@ public class Agenda {
 
 
     /**
-     * Acessa os dados de um contato específico.
-     * @param posicao Posição do contato na agenda.
-     * @return Dados do contato. Null se não há contato na posição.
+     * Acessa a representação completa em String de um contatato.
+     * @param posicaoUser Posição do contato na agenda, na visão do usuário.
+     * @return Dados do contato. "posição inválida" se ele não existir se não há contato na posição.
      */
-    public String getContatoString(int posicao) {
-        posicao--;
-        if (ehFavorito(posicao)) {
-            return "❤️ " + contatos[posicao].getContatoCompleto();
-        } else {
-            return contatos[posicao].getContatoCompleto();
+    public String getContatoString(int posicaoUser) {
+        if (posicaoUser <= 100 && posicaoUser >= 1) {
+            int posicao = posicaoUser -1;
+            if (getContatos()[posicao] != null) {
+                if (ehFavorito(posicao)) {
+                    return "❤️ " + contatos[posicao].getContatoCompleto();
+                } else {
+                    return contatos[posicao].getContatoCompleto();
+                }
+            } else {
+                return "POSIÇÃO INVÁLIDA!";
+            }
         }
-    }
-
-    public Contato getContato(int posicao) {
-        return contatos[posicao];
+        return "POSIÇÃO INVÁLIDA!";
     }
 
     /**
      * Cadastra um contato em uma posição. Um cadastro em uma posição que já existe sobrescreve o anterior.
-     * @param posicao Posição do contato.
+     * @param posicao Posição do contato, na visão do usuário.
      * @param nome Nome do contato.
      * @param sobrenome Sobrenome do contato.
-     * @param telefone Telefone do contato.
+     * @param telefone Telefone do contato em String.
      */
-    public String cadastraContato(int posicao, String nome, String sobrenome, String telefone) {
-        posicao--;
+    public String cadastraContato(int posicaoUser, String nome, String sobrenome, String telefone) {
+        int posicao = posicaoUser -1;
         if (!(posicao >= 0 && posicao <= 99)) {
             return "POSIÇÃO INVÁLIDA";
         }
@@ -61,6 +70,7 @@ public class Agenda {
             this.contatos[posicao] = contatoCriado;
             return "CADASTRO REALIZADO";
     }
+
     /**
      * Verifica se há contato na posição
      * @return O array de contatos.
@@ -69,18 +79,25 @@ public class Agenda {
         return contatos.clone();
     }
 
+    /**
+     * Cadastra um contato na lista de favoritos em uma posição. Um cadastro em uma posição que já existe sobrescreve o anterior e remove seu status de favorito.
+     * @param posContato Posição do contato na lista de contatos, na visão do usuário.
+     * @param posFav Posição que o contato terá na lsita de favoritos, na visão do usuário.
+     *
+     */
     public String cadastraFavorito(int posContato, int posFav) {
-
-        if (contatos[posContato-1] == null || !(posFav <= 10 && posFav >= 1) || !(posContato <= 100 && posContato >= 1) ) {
+        int posContReal = posContato -1;
+        int posFavReal = posFav -1;
+        if ((!(posFav <= 10 && posFav >= 1) || !(posContato <= 100 && posContato >= 1)) || contatos[posContReal] == null) {
             return "POSIÇÃO INVÁLIDA";
         }
-        if (ehFavorito(posContato -1)) {
+        if (ehFavorito(posContReal)) {
             return "CONTATO JÁ É FAVORITO";
         }
-        if (favoritos[posFav-1] != null) {
-            removeFavorito(posFav-1);
+        if (favoritos[posFavReal] != null) {
+            removeFavorito(posFavReal);
         }
-        favoritos[posFav-1] = contatos[posContato-1];
+        favoritos[posFavReal] = contatos[posContReal];
         return "CONTATO FAVORITADO NA POSIÇÃO " + (posFav) + "!";
     }
 
@@ -96,10 +113,10 @@ public class Agenda {
         return "REMOVIDO!";
     }
 
-    public boolean ehFavorito(int pos) {
+    public boolean ehFavorito(int posReal) {
         for (int i=0; i<10; i++) {
             if (favoritos[i] != null) {
-                if (favoritos[i].equals(contatos[pos])) {
+                if (favoritos[i].equals(contatos[posReal])) {
                     return true;
                 }
             }

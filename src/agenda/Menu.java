@@ -138,16 +138,14 @@ public class Menu {
      */
     private void exibeContato() {
         System.out.print("\nQual contato> ");
+        int posicaoUser;
         try {
-            int posicao = Integer.parseInt(scanner.nextLine());
-            if (agenda.getContatos()[posicao] != null) {
-                System.out.println("Dados do contato:\n" + agenda.getContatoString(posicao));
-            } else {
-                System.out.println("POSIÇÃO INVÁLIDA!");
-            }
+            posicaoUser = Integer.parseInt(scanner.nextLine());
         } catch (NumberFormatException e ) {
             System.out.println("POSIÇÃO INVÁLIDA!");
+            return;
         }
+        System.out.println("Dados do contato:\n" + agenda.getContatoString(posicaoUser));
     }
 
     /**

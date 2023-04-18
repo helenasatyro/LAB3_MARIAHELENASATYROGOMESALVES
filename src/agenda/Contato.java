@@ -7,8 +7,11 @@ public class Contato {
     private final String sobrenome;
     private final String telefone;
     public Contato(String nome, String sobrenome, String telefone) {
-        if (nome == null || telefone == null) {
-            throw new NullPointerException("Nome e Telefone não podem ser nulos.");
+        if (nome == null) {
+            throw new NullPointerException("Nome nulo");
+        }
+        if (nome.isBlank() || telefone.isBlank()) {
+            throw new IllegalArgumentException("Parametros inválidos");
         }
         if (sobrenome == null) { sobrenome = "";}
         this.nome = nome;
