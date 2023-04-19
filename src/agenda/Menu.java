@@ -115,10 +115,9 @@ public class Menu {
      */
     private void cadastraContato() {
         System.out.print("\nPosição na agenda> ");
-        String strPosicao = scanner.nextLine();
         int posicao;
         try {
-            posicao = Integer.parseInt(strPosicao);
+            posicao = Integer.parseInt(scanner.nextLine());
         } catch (NumberFormatException e ) {
             System.out.println("POSIÇÃO INVÁLIDA");
             return;

@@ -1,7 +1,7 @@
 package agenda;
 
 /**
- * Classe que mantém uma lista de contatos com posições. Pode ter 100 contatos.
+ * Classe que mantém uma lista de contatos com posições. Pode ter 100 contatos, 10 podendo ser favoritos.
  *
  * @author Maria Helena Sátyro Gomes Alves
  */
@@ -12,7 +12,7 @@ public class Agenda {
     private final Contato[] favoritos;
 
     /**
-     * Cria uma agenda.
+     * Cria uma agenda de tamanho 100, e uma lista de favoritos de tamanho 10.
      */
     public Agenda() {
         this.contatos = new Contato[TAMANHO_AGENDA];
@@ -23,16 +23,16 @@ public class Agenda {
     /**
      * Acessa a representação completa em String de um contatato.
      * @param posicaoUser Posição do contato na agenda, na visão do usuário.
-     * @return Dados do contato. "posição inválida" se ele não existir se não há contato na posição.
+     * @return Dados do contato. "Posição inválida" se ele não existir se não há contato na posição.
      */
     public String getContatoString(int posicaoUser) {
         if (posicaoUser <= 100 && posicaoUser >= 1) {
-            int posicao = posicaoUser -1;
-            if (getContatos()[posicao] != null) {
-                if (ehFavorito(posicao)) {
-                    return "❤️ " + contatos[posicao].getContatoCompleto();
+            int posReal = posicaoUser -1;
+            if (getContatos()[posReal] != null) {
+                if (ehFavorito(posReal)) {
+                    return "❤️ " + contatos[posReal].getContatoCompleto();
                 } else {
-                    return contatos[posicao].getContatoCompleto();
+                    return contatos[posReal].getContatoCompleto();
                 }
             } else {
                 return "POSIÇÃO INVÁLIDA!";
@@ -43,23 +43,25 @@ public class Agenda {
 
     /**
      * Cadastra um contato em uma posição. Um cadastro em uma posição que já existe sobrescreve o anterior.
-     * @param posicao Posição do contato, na visão do usuário.
+     * Não lança erros, apenas retorna uma string informando o motivo de não ter sido possível completar a ação.
+     * @param posicaoUser Posição do contato, na visão do usuário.
      * @param nome Nome do contato.
      * @param sobrenome Sobrenome do contato.
      * @param telefone Telefone do contato em String.
+     * @return String informando se a operação ocorreu com sucesso, ou o motivo de não ter ocorrido.
      */
     public String cadastraContato(int posicaoUser, String nome, String sobrenome, String telefone) {
-        int posicao = posicaoUser -1;
-        if (!(posicao >= 0 && posicao <= 99)) {
+        int posReal = posicaoUser -1;
+        if (!(posReal >= 0 && posReal <= 99)) {
             return "POSIÇÃO INVÁLIDA";
         }
-        if (nome.equals("")) {
-            return "CONTATO INVÁLIDO";
+        Contato contatoCriado;
+        // PERGUNTAR PRA LIVIA SE TRATA OU DEIXA QUEBRAR
+        try {
+            contatoCriado = new Contato(nome, sobrenome, telefone);
+        } catch (Exception e) {
+            return e.getMessage();
         }
-        if (telefone.equals("")) {
-            return "CONTATO INVÁLIDO";
-        }
-        Contato contatoCriado = new Contato(nome, sobrenome, telefone);
         for (int i=0; i < 100; i++) {
             if (contatos[i] != null) {
                 if (contatos[i].equals(contatoCriado)) {
@@ -67,7 +69,7 @@ public class Agenda {
                 }
             }
         }
-            this.contatos[posicao] = contatoCriado;
+            this.contatos[posReal] = contatoCriado;
             return "CADASTRO REALIZADO";
     }
 
@@ -80,15 +82,15 @@ public class Agenda {
     }
 
     /**
-     * Cadastra um contato na lista de favoritos em uma posição. Um cadastro em uma posição que já existe sobrescreve o anterior e remove seu status de favorito.
-     * @param posContato Posição do contato na lista de contatos, na visão do usuário.
-     * @param posFav Posição que o contato terá na lsita de favoritos, na visão do usuário.
-     *
+     * Cadastra um contato na lista de favoritos em uma posição. Um cadastro em uma posição que já existe sobrescreve o anterior.
+     * @param posContatoUsr Posição do contato na lista de contatos, na visão do usuário.
+     * @param posFavUsr Posição que o contato terá na lsita de favoritos, na visão do usuário.
+     * @return String indicando se a operação ocorreu com sucesso, a posição do contato se tiver ocorrido, ou o motivo de não ter ocorrido.
      */
-    public String cadastraFavorito(int posContato, int posFav) {
-        int posContReal = posContato -1;
-        int posFavReal = posFav -1;
-        if ((!(posFav <= 10 && posFav >= 1) || !(posContato <= 100 && posContato >= 1)) || contatos[posContReal] == null) {
+    public String cadastraFavorito(int posContatoUsr, int posFavUsr) {
+        int posContReal = posContatoUsr -1;
+        int posFavReal = posFavUsr -1;
+        if ((!(posFavUsr <= 10 && posFavUsr >= 1) || !(posContatoUsr <= 100 && posContatoUsr >= 1)) || contatos[posContReal] == null) {
             return "POSIÇÃO INVÁLIDA";
         }
         if (ehFavorito(posContReal)) {
@@ -98,21 +100,30 @@ public class Agenda {
             removeFavorito(posFavReal);
         }
         favoritos[posFavReal] = contatos[posContReal];
-        return "CONTATO FAVORITADO NA POSIÇÃO " + (posFav) + "!";
+        return "CONTATO FAVORITADO NA POSIÇÃO " + (posFavUsr) + "!";
     }
-
-    public String removeFavorito(int posFav) {
-        posFav--;
-        if (!(posFav <= 9 && posFav >= 0)) {
+    /**
+     * Remove um contato da lista de favoritos em uma posição.
+     * @param posFavUsr Posição que o contato terá na lista de favoritos, na visão do usuário.
+     * @return String indicando se a operação ocorreu com sucesso, ou o motivo de não ter ocorrido.
+     */
+    public String removeFavorito(int posFavUsr) {
+        posFavUsr--;
+        if (!(posFavUsr <= 9 && posFavUsr >= 0)) {
             return "POSIÇÃO INVÁLIDA";
         }
-        if (favoritos[posFav] == null) {
+        if (favoritos[posFavUsr] == null) {
             return "POSIÇÃO INVÁLIDA";
         }
-        favoritos[posFav] = null;
+        favoritos[posFavUsr] = null;
         return "REMOVIDO!";
     }
 
+    /**
+     * Informa se o contato é ou não favorito.
+     * @param posReal Posição que o contato ocupa na lista de favoritos.
+     * @return boolean true ou false.
+     */
     public boolean ehFavorito(int posReal) {
         for (int i=0; i<10; i++) {
             if (favoritos[i] != null) {
@@ -123,7 +134,10 @@ public class Agenda {
         }
         return false;
     }
-
+    /**
+     * Formata o array de favoritos para impressão.
+     * @return a string formatada representando os favoritos.
+     */
     public String getFavoritos() {
         String retorno = "";
         for (int i=0; i < TAMANHO_FAVS; i++) {
@@ -133,13 +147,16 @@ public class Agenda {
         }
         return retorno;
     }
-
+    /**
+     * Formata o array de contatos para impressão.
+     * @return a string formatada representando o array de contatos.
+     */
     @Override
     public String toString() {
         String retorno = "";
         for (int i = 0; i < contatos.length; i++) {
             if (contatos[i] != null) {
-                retorno += "\n" + (i+1) + " - " + contatos[i];
+                retorno +=  (i+1) + " - " + contatos[i] + "\n";
             }
         }
         return retorno;

@@ -59,13 +59,13 @@ class AgendaTest {
 	@Test
 	void testaConstrutorSemTelefone() {
 		Agenda agenda = new Agenda();
-		assert agenda.cadastraContato(1, "Matheus", "Gaudencio", "").equals("CONTATO INVÁLIDO");
+		assertEquals("CONTATO INVÁLIDO", agenda.cadastraContato(1, "Matheus", "Gaudencio", ""));
 	}
 
 	@Test
 	void testaConstrutorSemNome() {
 		Agenda agenda = new Agenda();
-		assert agenda.cadastraContato(1, "", "Gaudencio", "(83) 99999-0000").equals("CONTATO INVÁLIDO");
+		assertEquals("CONTATO INVÁLIDO", agenda.cadastraContato(1, "", "Gaudencio", "(83) 99999-0000"));
 	}
 
 	@Test
@@ -84,7 +84,7 @@ class AgendaTest {
 	void testaEhFavorito() {
 		assertEquals(false, agendaBase.ehFavorito(2), "Não deve ser fav antes do cadastro, usa pos real");
 		agendaBase.cadastraFavorito(3, 2);
-		assertEquals(true, agendaBase.ehFavorito(2), "Deve ser fav após o cadastro, usa pos real.");
+		assertEquals(true, agendaBase.ehFavorito(2), "Deve ser fav após o cadastro, usa pos real."); // função do sistema usa posição real
 	}
 
 	@Test
@@ -140,4 +140,21 @@ class AgendaTest {
 		agendaBase.removeFavorito(1);
 		assertEquals("Matheus Gaudencio\n(83) 99999-0000", agendaBase.getContatoString(1), "Coração deve ter sido removido");
 	}
+
+	@Test
+	void testaGetFavoritos() {
+		agendaBase.cadastraFavorito(1, 1);
+		agendaBase.cadastraFavorito(3, 2);
+		agendaBase.cadastraFavorito(4, 10);
+		assertEquals("1 - Matheus Gaudencio\n2 - helena satyro\n10 - maria helena\n", agendaBase.getFavoritos());
+	}
+
+	@Test
+	void testaGetAgendaString() {
+		agendaBase.cadastraFavorito(1, 1);
+		agendaBase.cadastraFavorito(3, 2);
+		agendaBase.cadastraFavorito(4, 10);
+		assertEquals("1 - Matheus Gaudencio\n3 - helena satyro\n4 - maria helena\n100 - contato cem\n", agendaBase.toString());
+	}
+
 }
