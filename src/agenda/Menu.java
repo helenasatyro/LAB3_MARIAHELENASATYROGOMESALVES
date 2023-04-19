@@ -1,4 +1,5 @@
 package agenda;
+import java.sql.SQLOutput;
 import java.util.Scanner;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -128,6 +129,7 @@ public class Menu {
     }
     /**
      * Exibe os prompts para coletar dados para adicionar um contato à lista de favoritos.
+     * Exibe uma string informando o status de sucesso ou falha da operação.
      */
     private void addFavorito() {
         System.out.print("Contato> ");
@@ -146,7 +148,13 @@ public class Menu {
             System.out.println("POSIÇÃO INVÁLIDA");
             return;
         }
-        System.out.println(agenda.cadastraFavorito(cont, pos));
+        try {
+            agenda.cadastraFavorito(cont, pos);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        System.out.println("CONTATO FAVORITADO NA POSIÇÃO " + (pos) + "!");
+
     }
     /**
      * Imprime a lista de favoritos.
@@ -181,7 +189,14 @@ public class Menu {
         String sobrenome = scanner.nextLine();
         System.out.print("Telefone> ");
         String telefone = scanner.nextLine();
-        System.out.println(agenda.cadastraContato(posicao, nome, sobrenome, telefone));
+        try {
+            agenda.cadastraContato(posicao, nome, sobrenome, telefone);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return;
+        }
+        System.out.println("CADASTRO REALIZADO");
+
 
     }
 
@@ -203,7 +218,7 @@ public class Menu {
     /**
      * Sai da aplicação.
      */
-    private void sai() {
+    private static void sai() {
         System.out.println("\nVlw flw o/");
         System.exit(0);
     }

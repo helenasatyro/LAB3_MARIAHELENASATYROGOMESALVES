@@ -3,11 +3,13 @@ import agenda.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import java.util.IdentityHashMap;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 
 class AgendaTest {
-	private Agenda agendaBase = new Agenda();
+	private Agenda agendaBase;
 
 	@BeforeEach
 	void setUp() {
@@ -20,52 +22,82 @@ class AgendaTest {
 	}
 
 	@Test
-	void testaConstrutorPosVazia() {
-		Agenda agenda = new Agenda();
-		assert agenda.cadastraContato(1, "Matheus", "Gaudencio", "(83) 99999-0000").equals("CADASTRO REALIZADO");
-	}
-
-	@Test
-	void testaConstrutorPosExistente() {
+	void testaCadastraPosVazia() {
 		Agenda agenda = new Agenda();
 		agenda.cadastraContato(1, "Matheus", "Gaudencio", "(83) 99999-0000");
-		assert agenda.cadastraContato(1, "Pedro", "Silva", "(84) 98888-1111").equals("CADASTRO REALIZADO");
+		assertEquals("Matheus Gaudencio", agenda.getContatos()[0].toString());
 	}
 
 	@Test
-	void testaContatoDuplicado() {
+	void testaCadastraSobrescrito() {
 		Agenda agenda = new Agenda();
 		agenda.cadastraContato(1, "Matheus", "Gaudencio", "(83) 99999-0000");
-		assert agenda.cadastraContato(3, "Matheus", "Gaudencio", "(83) 99999-0000").equals("CONTATO JA CADASTRADO");
+		assertEquals("Matheus Gaudencio", agenda.getContatos()[0].toString());
+		agenda.cadastraContato(1, "Pedro", "Silva", "(84) 98888-1111");
+		assertEquals("Pedro Silva", agenda.getContatos()[0].toString());
 	}
 
 	@Test
-	void testaConstrutorLimite() {
+	void testaCadastraContatoDuplicado() {
 		Agenda agenda = new Agenda();
-		assert agenda.cadastraContato(100, "Matheus", "Gaudencio", "(83) 99999-0000").equals("CADASTRO REALIZADO");
-	}
-	@Test
-	void testaConstrutorAcimaLimite() {
-		Agenda agenda = new Agenda();
-		assert agenda.cadastraContato(101, "Matheus", "Gaudencio", "(83) 99999-0000").equals("POSIÇÃO INVÁLIDA");
-	}
-
-	@Test
-	void testaConstrutorAbaixoLimite() {
-		Agenda agenda = new Agenda();
-		assert agenda.cadastraContato(0, "Matheus", "Gaudencio", "(83) 99999-0000").equals("POSIÇÃO INVÁLIDA");
+		agenda.cadastraContato(1, "Matheus", "Gaudencio", "(83) 99999-0000");
+		try {
+			agenda.cadastraContato(3, "Matheus", "Gaudencio", "(83) 99999-0000");
+			fail("Deve lançar exceção");
+		} catch (IllegalCallerException e ) {
+			assertEquals("CONTATO JÁ CADASTRADO", e.getMessage());
+		}
 	}
 
 	@Test
-	void testaConstrutorSemTelefone() {
+	void testaCadastraLimite() {
 		Agenda agenda = new Agenda();
-		assertEquals("CONTATO INVÁLIDO", agenda.cadastraContato(1, "Matheus", "Gaudencio", ""));
+		agenda.cadastraContato(100, "Matheus", "Gaudencio", "(83) 99999-0000");
+		assertEquals("Matheus Gaudencio", agenda.getContatos()[99].toString());
+	}
+	@Test
+	void testaCadastraAcimaLimite() {
+		Agenda agenda = new Agenda();
+		try {
+			agenda.cadastraContato(101, "Matheus", "Gaudencio", "(83) 99999-0000");
+			fail("Deve lançar exceção");
+		} catch (ArrayIndexOutOfBoundsException e) {
+			assertEquals("POSIÇÃO INVÁLIDA", e.getMessage());
+		}
 	}
 
 	@Test
-	void testaConstrutorSemNome() {
+	void testaCadastraAbaixoLimite() {
 		Agenda agenda = new Agenda();
-		assertEquals("CONTATO INVÁLIDO", agenda.cadastraContato(1, "", "Gaudencio", "(83) 99999-0000"));
+		try {
+			agenda.cadastraContato(0, "Matheus", "Gaudencio", "(83) 99999-0000");
+			fail("Deve lançar exceção");
+		} catch (ArrayIndexOutOfBoundsException e) {
+			assertEquals("POSIÇÃO INVÁLIDA", e.getMessage());
+		}
+	}
+
+	@Test
+	void testaCadastraSemTelefone() {
+		Agenda agenda = new Agenda();
+		try {
+			agenda.cadastraContato(3, "Matheus", "Gaudencio", "");
+			fail("Deve lançar exceção");
+		} catch (IllegalArgumentException e ) {
+			assertEquals("CONTATO INVÁLIDO", e.getMessage());
+		}
+	}
+
+	@Test
+	void testaCadastraSemNome() {
+		Agenda agenda = new Agenda();
+
+		try {
+			agenda.cadastraContato(1, "", "Gaudencio", "(83) 99999-0000");
+			fail("Deve lançar exceção");
+		} catch (IllegalArgumentException e) {
+			assertEquals("CONTATO INVÁLIDO", e.getMessage());
+		}
 	}
 
 	@Test
@@ -76,55 +108,79 @@ class AgendaTest {
 	@Test
 	void testaTemContato() {
 		Agenda agenda = new Agenda();
-		assertEquals("CADASTRO REALIZADO",  agenda.cadastraContato(1, "Matheus", "Gaudencio", "(83) 99999-0000"));
-		assertEquals(true, agendaBase.getContatos()[0] != null);
+		agenda.cadastraContato(1, "Matheus", "Gaudencio", "(83) 99999-0000");
+		assertNotNull(agendaBase.getContatos()[0], "Deve ter contato cadastrado na posição.");
 	}
 
 	@Test
 	void testaEhFavorito() {
-		assertEquals(false, agendaBase.ehFavorito(2), "Não deve ser fav antes do cadastro, usa pos real");
+		assertFalse(agendaBase.ehFavorito(2), "Não deve ser fav antes do cadastro, usa pos real"); // função do sistema usa posição real
 		agendaBase.cadastraFavorito(3, 2);
-		assertEquals(true, agendaBase.ehFavorito(2), "Deve ser fav após o cadastro, usa pos real."); // função do sistema usa posição real
+		assertTrue(agendaBase.ehFavorito(2), "Deve ser fav após o cadastro, usa pos real."); // função do sistema usa posição real
 	}
 
 	@Test
 	void testaDefinirFavoritoPosVazia() {
-		assertEquals("CONTATO FAVORITADO NA POSIÇÃO 1!", agendaBase.cadastraFavorito(3, 1), "Deve favoritar com sucesso na posição especificada");
-		assert agendaBase.ehFavorito(3-1); // função do sistema usa posição real
+		agendaBase.cadastraFavorito(3, 1); // "Deve favoritar com sucesso na posição especificada");
+		assertTrue(agendaBase.ehFavorito(3-1), "Deve favoritar o contato com sucesso"); // função do sistema usa posição real
 	}
 
 	@Test
 	void testaDefinirFavoritoAbaixoLim() {
-		assertEquals("POSIÇÃO INVÁLIDA", agendaBase.cadastraFavorito(3, 0), "Não deve cadastrar com sucesso ou levantar exceção");
+		try {
+			agendaBase.cadastraFavorito(3, 0);
+			fail("Deve lançar exceção");
+		} catch (Exception e) {
+			assertEquals("POSIÇÃO INVÁLIDA", e.getMessage());
+		}
+
 	}
 	@Test
 	void testaDefinirFavoritoLim() {
-		assertEquals("CONTATO FAVORITADO NA POSIÇÃO 10!", agendaBase.cadastraFavorito(3, 10), "Deve cadastrar com sucesso");
+		agendaBase.cadastraFavorito(3, 10);
+		assertTrue(agendaBase.ehFavorito(2), "Deve cadastrar com sucesso"); // função do sistema usa posição real
 	}
 	@Test
 	void testaDefinirFavoritoAcimaLim() {
-		assertEquals("POSIÇÃO INVÁLIDA", agendaBase.cadastraFavorito(3, 11), "Não deve cadastrar com sucesso ou levantar exceção");
+		try {
+			agendaBase.cadastraFavorito(3, 11);
+			fail("Deve lançar exceção");
+		} catch (Exception e) {
+			assertEquals("POSIÇÃO INVÁLIDA", e.getMessage());
+		}
 	}
 	@Test
 	void testaDefinirFavoritoContatoLim() {
-		assertEquals("CONTATO FAVORITADO NA POSIÇÃO 3!", agendaBase.cadastraFavorito(100, 3), "Deve cadastrar com sucesso");
+		agendaBase.cadastraFavorito(100, 3);
+		assertTrue(agendaBase.ehFavorito(99),"Deve cadastrar com sucesso"); // função do sistema usa posição real
+
 	}
 
 	@Test
 	void testaDefinirFavoritoContatoAcimaLim() {
-		assertEquals("POSIÇÃO INVÁLIDA", agendaBase.cadastraFavorito(101, 1), "Não deve cadastrar com sucesso ou levantar exceção");
+		try {
+			agendaBase.cadastraFavorito(101, 1);
+			fail("Deve lançar exceção");
+		} catch (Exception e) {
+			assertEquals("POSIÇÃO INVÁLIDA", e.getMessage());
+		}
 	}
 	@Test
 	void testaDefinirFavoritoContatoAbaixoLim() {
-		assertEquals("POSIÇÃO INVÁLIDA", agendaBase.cadastraFavorito(0, 1), "Não deve cadastrar com sucesso ou levantar exceção");
+		try {
+			agendaBase.cadastraFavorito(0, 1);
+			fail("Deve lançar exceção");
+		} catch (Exception e) {
+			assertEquals("POSIÇÃO INVÁLIDA", e.getMessage());
+		}
 	}
 
 	@Test
-	void testaDefinirFavoritoPosOcupada() {
+	void testaDefinirFavoritoSobrescrito() {
 		agendaBase.cadastraFavorito(3, 1);
 		agendaBase.cadastraFavorito(4, 1);
-		assert !agendaBase.ehFavorito(2); // função do sistema usa posição real
-		assert agendaBase.ehFavorito(3); // função do sistema usa posição real
+		assertFalse(agendaBase.ehFavorito(2), "Deve remover a condição de favorito do contato sobrescrito"); // função do sistema usa posição real
+		assertTrue(agendaBase.ehFavorito(3), "Deve favoritar um novo contato"); // função do sistema usa posição real
 	}
 
 	@Test
@@ -136,6 +192,7 @@ class AgendaTest {
 	@Test
 	void testaContatoCompleto() {
 		agendaBase.cadastraFavorito(1, 1);
+		assert agendaBase.ehFavorito(0);
 		assertEquals("❤️ Matheus Gaudencio\n(83) 99999-0000", agendaBase.getContatoString(1), "Deve exibir um coração no favorito.");
 		agendaBase.removeFavorito(1);
 		assertEquals("Matheus Gaudencio\n(83) 99999-0000", agendaBase.getContatoString(1), "Coração deve ter sido removido");

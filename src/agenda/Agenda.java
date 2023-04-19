@@ -10,8 +10,10 @@ import java.util.NoSuchElementException;
 public class Agenda {
     private static final int TAMANHO_AGENDA = 100;
     private static final int TAMANHO_FAVS = 10;
+    private static final int TAMANHO_TAGS = 5;
     private final Contato[]  contatos;
     private final Contato[] favoritos;
+    private String[] tags;
 
     /**
      * Cria uma agenda de tamanho 100, e uma lista de favoritos de tamanho 10.
@@ -19,6 +21,7 @@ public class Agenda {
     public Agenda() {
         this.contatos = new Contato[TAMANHO_AGENDA];
         this.favoritos = new Contato[TAMANHO_FAVS];
+        this.tags = new String[TAMANHO_TAGS];
     }
 
 
@@ -50,29 +53,29 @@ public class Agenda {
      * @param nome Nome do contato.
      * @param sobrenome Sobrenome do contato.
      * @param telefone Telefone do contato em String.
-     * @return String informando se a operação ocorreu com sucesso, ou o motivo de não ter ocorrido.
      */
-    public String cadastraContato(int posicaoUser, String nome, String sobrenome, String telefone) {
+    public void cadastraContato(int posicaoUser, String nome, String sobrenome, String telefone) {
         int posReal = posicaoUser -1;
         if (!(posReal >= 0 && posReal <= 99)) {
-            return "POSIÇÃO INVÁLIDA";
+            throw new ArrayIndexOutOfBoundsException("POSIÇÃO INVÁLIDA");
         }
         Contato contatoCriado;
         // PERGUNTAR PRA LIVIA SE TRATA OU DEIXA QUEBRAR
         try {
             contatoCriado = new Contato(nome, sobrenome, telefone);
-        } catch (Exception e) {
-            return e.getMessage();
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException(e.getMessage());
+        } catch (NullPointerException n) {
+            throw new NullPointerException(n.getMessage());
         }
         for (int i=0; i < 100; i++) {
             if (contatos[i] != null) {
                 if (contatos[i].equals(contatoCriado)) {
-                    return "CONTATO JA CADASTRADO";
+                    throw new IllegalCallerException("CONTATO JÁ CADASTRADO");
                 }
             }
         }
             this.contatos[posReal] = contatoCriado;
-            return "CADASTRO REALIZADO";
     }
 
     /**
@@ -87,22 +90,26 @@ public class Agenda {
      * Cadastra um contato na lista de favoritos em uma posição. Um cadastro em uma posição que já existe sobrescreve o anterior.
      * @param posContatoUsr Posição do contato na lista de contatos, na visão do usuário.
      * @param posFavUsr Posição que o contato terá na lsita de favoritos, na visão do usuário.
-     * @return String indicando se a operação ocorreu com sucesso, a posição do contato se tiver ocorrido, ou o motivo de não ter ocorrido.
+     * @throws ArrayIndexOutOfBoundsException se a posição do contato ou favorito passadas não corresponderem ao tamanho dos seus respectivos arrays
+     * @throws NullPointerException se a posição de contato passada não tem contato.
+     * @throws IllegalCallerException quando o contato a ser favoritado já é favorito
      */
-    public String cadastraFavorito(int posContatoUsr, int posFavUsr) {
+    public void cadastraFavorito(int posContatoUsr, int posFavUsr) {
         int posContReal = posContatoUsr -1;
         int posFavReal = posFavUsr -1;
-        if ((!(posFavUsr <= 10 && posFavUsr >= 1) || !(posContatoUsr <= 100 && posContatoUsr >= 1)) || contatos[posContReal] == null) {
-            return "POSIÇÃO INVÁLIDA";
+        if (!(posFavUsr <= 10 && posFavUsr >= 1) || !(posContatoUsr <= 100 && posContatoUsr >= 1)) {
+            throw new ArrayIndexOutOfBoundsException("POSIÇÃO INVÁLIDA");
+        }
+        if (contatos[posContReal] == null) {
+            throw new NullPointerException("POSIÇÃO INVÁLIDA");
         }
         if (ehFavorito(posContReal)) {
-            return "CONTATO JÁ É FAVORITO";
+            throw new IllegalCallerException("CONTATO JÁ É FAVORITO");
         }
         if (favoritos[posFavReal] != null) {
-            removeFavorito(posFavReal);
+            removeFavorito(posFavUsr);
         }
         favoritos[posFavReal] = contatos[posContReal];
-        return "CONTATO FAVORITADO NA POSIÇÃO " + (posFavUsr) + "!";
     }
     /**
      * Remove um contato da lista de favoritos em uma posição.
@@ -111,7 +118,7 @@ public class Agenda {
      * @throws NoSuchElementException se não houver contato na posição especificada
      */
     public void removeFavorito(int posFavUsr) {
-        int posFavReal = posFavUsr--;
+        int posFavReal = posFavUsr -1;
         if (!(posFavReal <= 9 && posFavReal >= 0)) {
             throw new ArrayIndexOutOfBoundsException("POSIÇÃO INVÁLIDA");
         }
@@ -123,13 +130,13 @@ public class Agenda {
 
     /**
      * Informa se o contato é ou não favorito.
-     * @param posReal Posição que o contato ocupa na lista de favoritos.
+     * @param posContReal Posição que o contato ocupa na lista de contatos.
      * @return boolean true ou false.
      */
-    public boolean ehFavorito(int posReal) {
+    public boolean ehFavorito(int posContReal) {
         for (int i=0; i<10; i++) {
             if (favoritos[i] != null) {
-                if (favoritos[i].equals(contatos[posReal])) {
+                if (favoritos[i].equals(contatos[posContReal])) {
                     return true;
                 }
             }
@@ -164,12 +171,24 @@ public class Agenda {
         return retorno;
     }
 
+    /**
+     * Muda o telefone de um contato.
+     *
+     * @param posUsr a posição do contato a ser muydado, na visão do usuário
+     * @param fone em string, o telefone a ser definido
+     * @throws NoSuchElementException se não existe contato na posição especificada
+     * @throws ArrayIndexOutOfBoundsException se a posição especificada não corresponde com o tamanho do array de contatos.
+     */
     public void mudaFone(int posUsr, String fone) {
         int posReal = posUsr -1;
-        if (!(posReal <= 99 && posReal >= 0) || contatos[posReal] == null) {
-            throw new IllegalArgumentException("POSIÇÃO INVÁLIDA");
-        } else {
-            contatos[posReal].setTelefone(fone);
+        if (!(posReal <= 99 && posReal >= 0)) {
+            throw new ArrayIndexOutOfBoundsException("POSIÇÃO INVÁLIDA");
         }
+        if (contatos[posReal] == null) {
+            throw new NullPointerException("POSIÇÃO INVÁLIDA");
+        }
+        contatos[posReal].setTelefone(fone);
+
     }
+
 }

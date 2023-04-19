@@ -15,22 +15,15 @@ public class Contato {
      * @param nome não vazio e não nulo
      * @param sobrenome não nulo
      * @param telefone não vazio e não nulo
+     * @throws NullPointerException se algum parâmetro for nulo
+     * @throws IllegalArgumentException se nome ou telefone forem vazios
      */
-    public Contato(String nome, String sobrenome, String telefone) {
-        if (nome == null) {
-            throw new NullPointerException("CONTATO INVÁLIDO - Nome nulo");
+    public Contato(String nome, String sobrenome, String telefone) throws IllegalArgumentException, NullPointerException  {
+        if (nome == null || sobrenome == null || telefone == null) {
+            throw new NullPointerException("CONTATO INVÁLIDO");
         }
-        if (sobrenome == null) {
-            throw new NullPointerException("CONTATO INVÁLIDO - Sobrenome nulo");
-        }
-        if (telefone == null) {
-            throw new NullPointerException("CONTATO INVÁLIDO - Telefone nulo");
-        }
-        if (nome.isBlank()) {
-            throw new IllegalArgumentException("CONTATO INVÁLIDO - Nome vazio");
-        }
-        if (telefone.isBlank()) {
-            throw new IllegalArgumentException("CONTATO INVÁLIDO - Telefone vazio");
+        if (nome.isBlank() || telefone.isBlank()) {
+            throw new IllegalArgumentException("CONTATO INVÁLIDO");
         }
         this.nome = nome;
         this.sobrenome = sobrenome;
@@ -83,14 +76,21 @@ public class Contato {
         return Objects.hash(nome, sobrenome);
     }
 
-    public void setTelefone(String fone) {
-        if (fone == null || fone.isBlank()) {
+    /**
+     * Define um novo telefone para um contato.
+     * @param fone o telefone em string
+     * @throws NullPointerException se o parâmetro não for passado
+     * @throws IllegalArgumentException se o par?âmetro for vazio
+     */
+    public void setTelefone(String fone) throws NullPointerException, IllegalArgumentException {
+        if (fone == null) {
             throw new NullPointerException("TELEFONE INVÁLIDO");
         }
         if (fone.isBlank()) {
             throw new IllegalArgumentException("TELEFONE INVÁLIDO");
         }
         telefone = fone;
-
     }
+
+
 }
