@@ -139,6 +139,7 @@ public class MainAgenda {
 			agenda.cadastraFavorito(cont, pos);
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
+			return;
 		}
 		System.out.println("CONTATO FAVORITADO NA POSIÇÃO " + (pos) + "!");
 
