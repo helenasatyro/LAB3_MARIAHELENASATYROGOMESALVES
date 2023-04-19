@@ -6,9 +6,9 @@ import java.util.Objects;
  * @author Maria Helena Sátyro Gomes Alves
  */
 public class Contato {
-    private final String nome;
-    private final String sobrenome;
-    private final String telefone;
+    private String nome;
+    private String sobrenome;
+    private String telefone;
 
     /**
      * Cria um contato recebendo como parâmetros um nome, sobrenome e telefone não nulos, nome e telefone não vazios.
@@ -81,5 +81,16 @@ public class Contato {
     @Override
     public int hashCode() {
         return Objects.hash(nome, sobrenome);
+    }
+
+    public void setTelefone(String fone) {
+        if (fone == null || fone.isBlank()) {
+            throw new NullPointerException("TELEFONE INVÁLIDO");
+        }
+        if (fone.isBlank()) {
+            throw new IllegalArgumentException("TELEFONE INVÁLIDO");
+        }
+        telefone = fone;
+
     }
 }

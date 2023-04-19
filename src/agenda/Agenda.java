@@ -1,5 +1,7 @@
 package agenda;
 
+import java.util.NoSuchElementException;
+
 /**
  * Classe que mantém uma lista de contatos com posições. Pode ter 100 contatos, 10 podendo ser favoritos.
  *
@@ -105,18 +107,18 @@ public class Agenda {
     /**
      * Remove um contato da lista de favoritos em uma posição.
      * @param posFavUsr Posição que o contato terá na lista de favoritos, na visão do usuário.
-     * @return String indicando se a operação ocorreu com sucesso, ou o motivo de não ter ocorrido.
+     * @throws ArrayIndexOutOfBoundsException se a posição não estiver entre 0 e 9 inclusive
+     * @throws NoSuchElementException se não houver contato na posição especificada
      */
-    public String removeFavorito(int posFavUsr) {
-        posFavUsr--;
-        if (!(posFavUsr <= 9 && posFavUsr >= 0)) {
-            return "POSIÇÃO INVÁLIDA";
+    public void removeFavorito(int posFavUsr) {
+        int posFavReal = posFavUsr--;
+        if (!(posFavReal <= 9 && posFavReal >= 0)) {
+            throw new ArrayIndexOutOfBoundsException("POSIÇÃO INVÁLIDA");
         }
-        if (favoritos[posFavUsr] == null) {
-            return "POSIÇÃO INVÁLIDA";
+        if (favoritos[posFavReal] == null) {
+            throw new NoSuchElementException("POSIÇÃO INVÁLIDA");
         }
-        favoritos[posFavUsr] = null;
-        return "REMOVIDO!";
+        favoritos[posFavReal] = null;
     }
 
     /**
@@ -160,5 +162,14 @@ public class Agenda {
             }
         }
         return retorno;
+    }
+
+    public void mudaFone(int posUsr, String fone) {
+        int posReal = posUsr -1;
+        if (!(posReal <= 99 && posReal >= 0) || contatos[posReal] == null) {
+            throw new IllegalArgumentException("POSIÇÃO INVÁLIDA");
+        } else {
+            contatos[posReal].setTelefone(fone);
+        }
     }
 }

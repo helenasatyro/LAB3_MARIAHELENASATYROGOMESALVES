@@ -2,11 +2,23 @@ package agenda;
 import java.util.Scanner;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-
+/**
+ * Classe de lógica da interface com menus texto para manipular uma agenda de contatos.
+ *
+ * @author Maria Helena Sátyro Gomes Alves
+ *
+ */
 public class Menu {
     private final Scanner scanner;
     private final Agenda agenda;
 
+    /**
+     * Cria um menu com uma agenda e carrega contatos de um arquivo csv para ela.
+     *
+     * @param scanner para entrada de dados
+     * @param agenda objeto Agenda para guardar os contatos
+     * @param nomeArquivo nome do arquivo csv a ser lido
+     */
     public Menu(Scanner scanner, Agenda agenda, String nomeArquivo) {
         this.scanner = scanner;
         this.agenda = agenda;
@@ -24,6 +36,12 @@ public class Menu {
             System.err.println("Erro lendo arquivo: " + e.getMessage());
         }
     }
+    /**
+     * Cria um menu com uma agenda e carrega contatos de um arquivo csv pré-definido para ela.
+     *
+     * @param scanner para entrada de dados
+     * @param agenda objeto Agenda para guardar os contatos
+     * */
     public Menu(Scanner scanner, Agenda agenda) {
         this(scanner, agenda, "agenda_inicial.csv");
     }
@@ -42,6 +60,7 @@ public class Menu {
                             "(A)dicionar Favorito\n" +
                             "(R)emover Favorito\n" +
                             "(S)air\n" +
+                            "(M)udar Telefone\n" +
                             "\n" +
                             "Opção> ");
             comando(scanner.nextLine().toUpperCase());
@@ -62,10 +81,34 @@ public class Menu {
             case "F" -> verFavoritos();
             case "A" -> addFavorito();
             case "R" -> removerFavorito();
+            case "M" -> mudaFone();
             default -> System.out.println("OPÇÃO INVÁLIDA!");
         }
     }
 
+    private void mudaFone() {
+        System.out.print("Contato> ");
+        int cont;
+        try {
+            cont = Integer.parseInt(scanner.nextLine());
+        } catch (NumberFormatException e) {
+            System.out.println("POSIÇÃO INVÁLIDA");
+            return;
+        }
+        System.out.println("Novo telefone> ");
+        String fone = scanner.nextLine();
+        try {
+            agenda.mudaFone(cont, fone);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return;
+        }
+        System.out.println("TELEFONE ALTERADO PARA " + fone);
+    }
+
+    /**
+     * Exibe os prompts para coletar dados para remover um contato da lista de favoritos.
+     */
     private void removerFavorito() {
         System.out.print("Posicao> ");
         int pos;
@@ -75,9 +118,17 @@ public class Menu {
             System.out.println("POSIÇÃO INVÁLIDA");
             return;
         }
-        System.out.println(agenda.removeFavorito(pos));
+        try {
+            agenda.removeFavorito(pos);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return;
+        }
+        System.out.println("REMOVIDO!");
     }
-
+    /**
+     * Exibe os prompts para coletar dados para adicionar um contato à lista de favoritos.
+     */
     private void addFavorito() {
         System.out.print("Contato> ");
         int cont;
@@ -97,7 +148,9 @@ public class Menu {
         }
         System.out.println(agenda.cadastraFavorito(cont, pos));
     }
-
+    /**
+     * Imprime a lista de favoritos.
+     */
     private void verFavoritos() {
         System.out.println(agenda.getFavoritos());
     }
@@ -111,7 +164,7 @@ public class Menu {
     }
 
     /**
-     * Cadastra um contato na agenda.
+     * Recebe dados para cadastrar um contato na agenda.
      */
     private void cadastraContato() {
         System.out.print("\nPosição na agenda> ");
