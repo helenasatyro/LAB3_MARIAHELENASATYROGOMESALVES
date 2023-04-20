@@ -19,11 +19,20 @@ public class Contato {
      * @throws IllegalArgumentException se nome ou telefone forem vazios
      */
     public Contato(String nome, String sobrenome, String telefone) throws IllegalArgumentException, NullPointerException  {
-        if (nome == null || sobrenome == null || telefone == null) {
-            throw new NullPointerException("CONTATO INVÁLIDO");
+        if (nome == null) {
+            throw new NullPointerException("CONTATO INVÁLIDO - Nome Nulo");
         }
-        if (nome.isBlank() || telefone.isBlank()) {
-            throw new IllegalArgumentException("CONTATO INVÁLIDO");
+        if (sobrenome == null) {
+            throw new NullPointerException("CONTATO INVÁLIDO - Sobrenome Nulo");
+        }
+        if (telefone == null) {
+            throw new NullPointerException("CONTATO INVÁLIDO - Telefone Nulo");
+        }
+        if (nome.isBlank()) {
+            throw new IllegalArgumentException("CONTATO INVÁLIDO - Nome Vazio");
+        }
+        if (telefone.isBlank()) {
+            throw new IllegalArgumentException("CONTATO INVÁLIDO - Telefone Vazio");
         }
         this.nome = nome;
         this.sobrenome = sobrenome;

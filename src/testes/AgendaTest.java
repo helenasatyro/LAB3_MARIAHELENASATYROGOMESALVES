@@ -84,7 +84,7 @@ class AgendaTest {
 			agenda.cadastraContato(3, "Matheus", "Gaudencio", "");
 			fail("Deve lançar exceção");
 		} catch (IllegalArgumentException e ) {
-			assertEquals("CONTATO INVÁLIDO", e.getMessage());
+			assertEquals("CONTATO INVÁLIDO - Telefone Vazio", e.getMessage());
 		}
 	}
 
@@ -96,7 +96,7 @@ class AgendaTest {
 			agenda.cadastraContato(1, "", "Gaudencio", "(83) 99999-0000");
 			fail("Deve lançar exceção");
 		} catch (IllegalArgumentException e) {
-			assertEquals("CONTATO INVÁLIDO", e.getMessage());
+			assertEquals("CONTATO INVÁLIDO - Nome Vazio", e.getMessage());
 		}
 	}
 

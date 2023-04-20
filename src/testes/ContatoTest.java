@@ -63,7 +63,7 @@ class ContatoTest {
             Contato contatoNulo = new Contato(null, "helena", "0947291");
             fail("Deve lançar exceção");
         } catch (NullPointerException e) {
-            assertEquals("CONTATO INVÁLIDO", e.getMessage());
+            assertEquals("CONTATO INVÁLIDO - Nome Nulo", e.getMessage());
         }
     }
 
@@ -73,7 +73,7 @@ class ContatoTest {
             Contato contatoNulo = new Contato("maria", null, "0947291");
             fail("Deve lançar exceção");
         } catch (NullPointerException e) {
-            assertEquals("CONTATO INVÁLIDO", e.getMessage());
+            assertEquals("CONTATO INVÁLIDO - Sobrenome Nulo", e.getMessage());
         }
     }
 
@@ -83,7 +83,7 @@ class ContatoTest {
             Contato contatoNulo = new Contato("maria", "helena", null);
             fail("Deve lançar exceção");
         } catch (NullPointerException e) {
-            assertEquals("CONTATO INVÁLIDO", e.getMessage());
+            assertEquals("CONTATO INVÁLIDO - Telefone Nulo", e.getMessage());
         }
     }
     @Test
@@ -92,13 +92,13 @@ class ContatoTest {
             Contato contatoVazio = new Contato("   ", "algo", "0947291");
             fail("Deve lançar exceção");
         } catch (IllegalArgumentException e) {
-            assertEquals("CONTATO INVÁLIDO", e.getMessage());
+            assertEquals("CONTATO INVÁLIDO - Nome Vazio", e.getMessage());
         }
         try {
             Contato contatoVazio = new Contato("", "algo", "0947291");
             fail("Deve lançar exceção");
         } catch (IllegalArgumentException e) {
-            assertEquals("CONTATO INVÁLIDO", e.getMessage());
+            assertEquals("CONTATO INVÁLIDO - Nome Vazio", e.getMessage());
         }
     }
     @Test

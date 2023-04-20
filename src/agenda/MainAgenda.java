@@ -182,7 +182,7 @@ public class MainAgenda {
 		String telefone = scanner.nextLine();
 		try {
 			agenda.cadastraContato(posicao, nome, sobrenome, telefone);
-		} catch (Exception e) {
+		} catch (ArrayIndexOutOfBoundsException e) {
 			System.out.println(e.getMessage());
 			return;
 		}

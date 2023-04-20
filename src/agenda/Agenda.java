@@ -60,14 +60,7 @@ public class Agenda {
             throw new ArrayIndexOutOfBoundsException("POSIÇÃO INVÁLIDA");
         }
         Contato contatoCriado;
-        // PERGUNTAR PRA LIVIA SE TRATA OU DEIXA QUEBRAR
-        try {
-            contatoCriado = new Contato(nome, sobrenome, telefone);
-        } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException(e.getMessage());
-        } catch (NullPointerException n) {
-            throw new NullPointerException(n.getMessage());
-        }
+        contatoCriado = new Contato(nome, sobrenome, telefone);
         for (int i=0; i < 100; i++) {
             if (contatos[i] != null) {
                 if (contatos[i].equals(contatoCriado)) {
